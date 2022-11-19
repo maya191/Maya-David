@@ -1,0 +1,76 @@
+# This program is checking if the email address is valid.
+
+def main():
+    print("Hello")
+
+    user_mail = input("Please enter your Email address\n")
+    if end_of_mail(user_mail) == 1 and first_char(user_mail) == 1 and isnt_contain_spaces(
+            user_mail) == 1 and is_invalid_chars(user_mail) == 1 and is_one_shtrudel(user_mail) == 1:
+        print("Congratulations your Email address is valid!")
+    else:
+        print("Unfortunately your Email address is invalid.")
+
+
+def end_of_mail(user_mail):
+    # this function is checking if the end of the Email address is valid
+
+    if user_mail.endswith("@gmail.com") or user_mail.endswith("@mta.ac.il"):
+        return 1
+    else:
+        return 0
+
+
+def first_char(user_mail):
+    # this function is checking if the Email starts with a letter
+
+    if user_mail[0].isalpha():
+        return 1
+    else:
+        return 0
+
+
+def isnt_contain_spaces(user_mail):
+    # this function is checking if the Email doesnt contain spaces
+
+    if " " not in user_mail:
+        return 1
+    else:
+        return 0
+
+
+def is_invalid_chars(user_mail):
+    # this function is checking if the Email address doesn't contain invalid chars
+
+    index = user_mail.find('@')
+    temp_mail = user_mail[0:index]
+    countDig = 0
+
+    for ch in temp_mail:
+        if ch.isdigit():
+            countDig += 1
+    if countDig < 1:  # if we don't have digits at all , the email is invalid
+        return 0
+
+    for ch in temp_mail:
+        if (ch.isdigit() == False) and (ch.isalpha() == False) and (ch != '.'):
+            return 0
+
+    return 1
+
+
+def is_one_shtrudel(user_mail):
+    # this function is checking if the Email address doesn't contain more than one @
+
+    count = 0
+
+    for ch in user_mail:
+        if ch == '@':
+            count += 1
+
+    if count == 1:
+        return 1
+    else:
+        return 0
+
+
+main()  # calling to the main function
