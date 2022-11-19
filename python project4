@@ -1,0 +1,326 @@
+import matplotlib.pyplot as plt
+
+
+def main():
+    # this is the main function
+    # the function build grades dictionary with the functions below
+    # in the main we did validation tests and call to the other function
+
+    print("Welcome!\n"
+          "Please pay attention to insert valid ID (9 numbers, digits only)\n"
+          "Also, please notice that course number consist of 3 identical digits (111, 222 etc)\n"
+          "Lets start :)")
+
+    course_grade = {}       # open an empty dictionary
+
+    more_student = True
+
+    while more_student:     # loop for students adding
+        id_num = check_id()
+        more_grades = True
+        course_grade[id_num] = {}
+
+        while more_grades:      # loop for grades adding
+
+            course_num = check_course_number()      # calling to the course num validation
+
+            grade = input("Please enter the grade in this course: ")
+            while grade.isdigit() == 0 or int(grade) < 0 or int(grade) > 100:
+                print("ERROR! invalid grade.")
+                grade = input("Please enter the grade in this course: ")
+
+            grade = int(grade)
+
+            course_grade[id_num][course_num] = grade  # insert the value to the dictionary
+
+            add_grade = input("Do you want to add another course? 1- Yes, 2- No: ")
+            while not add_grade == '1' and not add_grade == '2':
+                print("ERROR! invalid answer.")
+                add_grade = input("Do you want to add another course? 1- Yes, 2- No: ")
+
+            if add_grade == '2':
+                more_grades = False     # bool for ending the grades loop
+                print("-------------------------------------------------")
+
+        add_student = input("Do you want to add another student? 1- Yes, 2- No: ")
+        while not add_student == '1' and not add_student == '2':
+            print("ERROR! invalid answer.")
+            add_student = input("Do you want to add another student? 1- Yes, 2- No: ")
+
+        if add_student == '2':
+            more_student = False        # bool for ending the students loop
+
+    to_continue = True
+    while to_continue:
+        print_menu()
+        user_choice = input("")
+        while user_choice.isdigit() == 0 or int(user_choice) < 1 or int(user_choice) > 8:
+            print("ERROR! please choose again.")
+            user_choice = input("")
+
+        user_choice = int(user_choice)
+
+        if user_choice == 1:
+            search_student(course_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 2:
+            update_grade(course_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 3:
+            delete_student_grades(course_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 4:
+            delete_grade(course_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 5:
+            average_grade = calc_average(course_grade)
+            print("The average grade is:", average_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 6:
+            print_grades(course_grade)
+            print("-------------------------------------------------")
+
+        elif user_choice == 7:
+            bar_chart(course_grade)      # calling to the bar chart function
+            print("-------------------------------------------------")
+
+        else:    # user_choice = 8
+            print("GOODBYE!\nThank you for using our program!")
+            to_continue = False     # bool for ending the program
+
+
+def print_menu():
+    print("\nPlease choose one of the following options:\n"
+          "\t1. Search for grade of the student.\n"
+          "\t2. Update grade.\n"
+          "\t3. Delete all grades.\n"
+          "\t4. Delete grade.\n"
+          "\t5. Student average grade.\n"
+          "\t6. Print all students grades.\n"
+          "\t7. Print a bar chart of grades of the student.\n"
+          "\t8. EXIT.")
+
+
+def check_id():
+    # the function is asking for id
+
+    valid = True
+
+    id_num = input("Please enter the student ID:\n")
+
+    while valid:
+
+        if id_num.isdigit() == 1:  # checking if the number contain digits only.
+
+            try:
+                id_num_list = list(map(int, id_num))  # casting the string to list of ints
+
+                if len(id_num_list) == 9:
+                    if verify_id(id_num_list) == 1:  # calling to the validation function
+                        valid = False
+
+                        return id_num
+                    else:
+                        print("ERROR! the ID number is invalid.")
+                        print("------------------------------------------------------------")
+
+                        id_num = input("Please try again:\n")
+
+                else:
+                    print("ERROR! please enter ID with 9 digits, include 0's.")
+                    print("------------------------------------------------------------")
+                    id_num = input("Please enter the student ID:\n")
+            except ValueError:
+                print("ERROR! please enter ID with 9 digits, include 0's.")
+        else:
+            print("ERROR! please enter digits only.")
+            print("------------------------------------------------------------")
+
+            id_num = input("Please enter the student ID:\n")
+
+
+def verify_id(id_number):
+    # the function is checking if the id is valid
+
+    check_sum = 0
+    len_id = 9
+
+    for i in range(len_id):
+        current_num = id_number[i]
+
+        if i % 2 == 0:
+            check_sum += current_num
+
+        if i % 2 != 0:
+            current_num = id_number[i] * 2
+            if (current_num * 2) > 9:
+                temp = current_num % 10 + current_num // 10
+                check_sum += temp
+            else:
+                check_sum += current_num
+
+    if check_sum % 10 == 0:
+        return 1
+    else:
+        return 0
+
+
+def check_course_number():
+    # This function checking if the course number is valid
+
+    valid = True
+
+    course_num = input("Please enter the number of the course: ")
+
+    while valid:
+
+        if course_num.isdigit() == 1:  # checking if the number contain digits only.
+
+            try:
+                if len(course_num) == 3:
+                    valid = False
+                    course_num = int(course_num)  # casting the course number to int
+                    return course_num
+
+                else:
+                    print("ERROR! please enter course number with 3 digits.")
+                    print("------------------------------------------------------------")
+                    course_num = input("Please enter the number of the course: ")
+            except ValueError:
+                print("ERROR! please enter course number with 3 digits.")
+        else:
+            print("ERROR! please enter digits only.")
+            print("------------------------------------------------------------")
+
+            course_num = input("Please enter the number of the course: ")
+
+
+def search_student(course_grade):
+    # function for search student in the dictionary
+
+    id_num = check_id()
+    course_num = check_course_number()
+
+    if id_num in course_grade:
+        if course_num in course_grade[id_num]:
+            print("The course grade of", id_num, "is:", course_grade[id_num][course_num])
+        else:
+            print("The course number is not found.")
+    else:
+        print("The ID number is not found.")
+
+
+def update_grade(course_grade, new_grade):
+    # function for update grade of course
+
+    id_num = check_id()     # validation for ID number
+    course_num = check_course_number()      # validation for course number
+
+    new_grade = input("Please enter the new grade: ")
+    while new_grade.isdigit() == 0 or int(new_grade) < 0 or int(new_grade) > 100:
+        print("ERROR! please choose again.")
+        new_grade = input("Please enter the new grade: ")
+
+    if id_num in course_grade:      # checking id ID is in dictionary before start
+        if course_num in course_grade[id_num]:
+            course_grade[id_num][course_num] = new_grade
+            print("The grade changed successfully.")
+
+        else:
+            print("The course number is not found.")
+    else:
+        print("The ID number is not found.")
+
+
+def delete_student_grades(course_grade):
+    # function for delete all the student grades
+
+    id_num = check_id()     # validation for ID number
+
+    if id_num in course_grade:       # checking id ID is in dictionary before start
+
+        del course_grade[id_num]
+        print("The grades deleted successfully.")
+
+    else:
+        print("The ID number is not found.")
+
+
+def delete_grade(course_grade):
+    # function for delete grade from the student grades
+
+    id_num = check_id()     # validation for ID number
+    course_num = check_course_number()      # validation for course number
+
+    if id_num in course_grade:      # checking id ID is in dictionary before start
+        if course_num in course_grade[id_num]:
+            del course_grade[id_num][course_num]
+            print("The grade deleted successfully.")
+        else:
+            print("The course number is not found.")
+    else:
+        print("The ID number is not found.")
+
+
+def calc_average(course_grade):
+    # function for calculating the average of the student grades
+
+    id_num = check_id()     # validation for ID number
+    sum_grades = 0
+
+    if id_num in course_grade:      # checking id ID is in dictionary before start
+        i = 0
+        for course_num in course_grade[id_num]:
+            sum_grades += course_grade[id_num][course_num]
+            i += 1
+        return sum_grades / i
+    else:
+        print("The ID number is not found.")
+
+
+def print_grades(course_grade):
+    # function for print the student grades
+
+    id_num = check_id()     # validation for ID number
+
+    if id_num in course_grade:      # checking id ID is in dictionary before start
+        print(course_grade[id_num].items())
+    else:
+        print("The ID number is not found.")
+
+
+def bar_chart(course_grade):
+    # Create a list with the X coordinates of each bar's left edge.
+
+    id_num = check_id()     # validation for ID number
+    if id_num in course_grade:
+
+        x_cor = course_grade[id_num].keys()
+        x_cor = list(map(str, x_cor))
+
+        grade_list = course_grade[id_num].values()
+
+        bar_width = 0.8
+
+        plt.bar(x_cor, grade_list, bar_width)
+
+        plt.title("Student grades:")
+
+        plt.xlabel("course number")
+        plt.ylabel("Grades")
+
+        plt.yticks([0, 20, 40, 60, 80, 100],
+                   ['0', '20', '40', '60', '80', '100'])
+
+        plt.show()
+
+    else:
+        print("The ID number is not found.")
+
+
+main()
