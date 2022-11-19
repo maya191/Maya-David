@@ -1,0 +1,68 @@
+import turtle
+
+def main():
+    turtle.hideturtle()
+    turtle.speed(0)
+    turtle.penup()
+    xStart = -240
+    yStart = 240
+    turtle.goto(xStart, yStart)
+    turtle.pendown()
+
+   
+    boardSize = float(input("Enter the size of the board "))
+    while (boardSize < 0) or (boardSize / int(boardSize) != 1):
+        print("ERROR! you entered unvalid number. ")
+        boardSize = float(input("Enter the size of the board "))
+
+    boardSize = int(boardSize)
+    strBoardSize= str(boardSize)
+    gamerChoices=open ('chessGameBoard.txt','a')
+    gamerChoices.write(strBoardSize +'\n')
+    gamerChoices.close()
+
+    print("your choices up to today:")
+    gamerChoices=open ('chessGameBoard.txt','r')
+    print( gamerChoices.read())
+    gamerChoices.close()
+    for x in range(boardSize):                          #loop for cols
+        for y in range(boardSize):                      #loop for rows
+            if x % 2 == 0:                              #condition for rows color
+                if y % 2 == 0:                          #condition for cols color
+                    paintBlackSqure()  
+                else:
+                    paintWhiteSqure()
+            else:
+                if y % 2 == 0:
+                    paintWhiteSqure() 
+                else:
+                    paintBlackSqure()
+                
+        yStart -= 60 
+        turtle.penup()
+        turtle.goto(xStart, yStart)
+        turtle.pendown()
+    turtle.done()
+ 
+
+
+
+def paintBlackSqure():
+    turtle.fillcolor("black")
+    turtle.begin_fill()
+    for i in range(4):
+        turtle.forward(60)
+        turtle.right(90)
+    turtle.forward(60)
+    turtle.end_fill()
+
+def paintWhiteSqure():
+    turtle.fillcolor("white")
+    turtle.begin_fill()
+    for j in range(4):
+        turtle.forward(60)
+        turtle.right(90)
+    turtle.end_fill()
+    turtle.forward(60)
+
+main()
