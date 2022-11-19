@@ -1,0 +1,80 @@
+# This program is changing the sentence according to the user chose.
+
+
+def main():
+    print("Hello")
+    sentence = input("Please enter a sentence\n")
+    k = input("Please enter a number\n")
+    if k[0] == '-':     # validation test for negative number
+        while not k[1:].isdigit():
+            print("You entered invalid number, try again")
+            k = input("Please enter a number\n")
+    else:               # validation test for positive number
+        while not k.isdigit():
+            print("You entered invalid number, try again")
+            k = input("Please enter a number\n")
+    str_opt(sentence, k)
+
+
+def str_opt(sentence, number):
+    # this function is taking the chosen number and sending the sentence to the suitable function
+
+    if number < '0':
+        if int(number) % 2 == 0:
+            new_str = e_words(sentence)
+            print(new_str)
+        else:     # number % 2 != 0
+            new_str = end_to_begin(sentence)
+            print(new_str)
+
+    else:  # number >= 0
+        if int(number) % 2 == 0:
+            new_str = replace_the_spaces(sentence)
+            print(new_str)
+        else:     # number % 2 != 0
+            new_str = first_letter_up(sentence)
+            print(new_str)
+
+
+def replace_the_spaces(sentence):
+    # this function replacing every space to #
+
+    new_sentence = "The new sentence is:\n"
+    new_sentence += sentence.replace(" ", "#")
+    return new_sentence
+
+
+def end_to_begin(sentence):
+    # this function reversing the sentence
+    new_sentence = "The new sentence is:\n"
+    new_sentence += ''.join(reversed(sentence))
+
+    return new_sentence
+
+
+def e_words(sentence):
+    # this function delete all the words who contain the letter e
+
+    s_list = sentence.split()
+    new_sentence = "The new sentence is:\n"
+
+    for word in s_list:
+        if 'E' in word or 'e' in word:
+            continue
+        else:
+            new_sentence += word + " "
+
+    return new_sentence
+
+
+def first_letter_up(sentence):
+    # this function is making the sentence to a title.
+
+    new_sentence = sentence.lower()
+    title = new_sentence.title()
+    new_sentence = "The new sentence is:\n" + title
+    return new_sentence
+
+
+main()         # calling to the main function
+
